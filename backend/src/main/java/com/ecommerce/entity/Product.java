@@ -12,6 +12,8 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 @Getter
@@ -37,6 +39,7 @@ public class Product extends BaseEntity
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id", nullable = false)
+	@JsonIgnore
 	private Category category;
 
 	private String imageUrl;
