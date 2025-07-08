@@ -1,5 +1,8 @@
 package com.ecommerce.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ecommerce.dto.request.LoginRequest;
 import com.ecommerce.dto.request.RegisterRequest;
 import com.ecommerce.dto.response.ApiResponse;
@@ -12,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,15 +27,44 @@ public class AuthController {
 	@Autowired
 	private UserService userService;
 
-//	@PostMapping("/login")
-//	public ResponseEntity<ApiResponse<String>> login(@Valid @RequestBody LoginRequest loginRequest) {
-//		Authentication authentication = authenticationManager.authenticate(
-//				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
-//		);
-//
-//		SecurityContextHolder.getContext().setAuthentication(authentication);
-//		return ResponseEntity.ok(ApiResponse.success("Login successful"));
-//	}
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	@PostMapping("/login")
+	public ResponseEntity<ApiResponse<Map<String, Object>>> login(@Valid @RequestBody LoginRequest loginRequest) {
+		try {
+			// Find user by username
+			User user = userService.getUserByUsername(loginRequest.getUsername());
+
+			// Check if user is active
+			if (!user.isActive()) {
+				return ResponseEntity.badRequest()
+						.body(ApiResponse.error("Account is deactivated"));
+			}
+
+			// Verify password manually
+			if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+				return ResponseEntity.badRequest()
+						.body(ApiResponse.error("Invalid username or password"));
+			}
+
+			// Create response with user information
+			Map<String, Object> loginResponse = new HashMap<>();
+			loginResponse.put("id", user.getId());
+			loginResponse.put("username", user.getUsername());
+			loginResponse.put("email", user.getEmail());
+			loginResponse.put("firstName", user.getFirstName());
+			loginResponse.put("lastName", user.getLastName());
+			loginResponse.put("role", user.getRole().name());
+			loginResponse.put("isActive", user.isActive());
+
+			return ResponseEntity.ok(ApiResponse.success("Login successful", loginResponse));
+
+		} catch (Exception e) {
+			return ResponseEntity.badRequest()
+					.body(ApiResponse.error("Invalid username or password"));
+		}
+	}
 
 	@PostMapping("/register")
 	public ResponseEntity<ApiResponse<String>> register(@Valid @RequestBody RegisterRequest registerRequest) {
