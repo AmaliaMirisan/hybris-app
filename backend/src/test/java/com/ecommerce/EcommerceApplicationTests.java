@@ -1,11 +1,11 @@
-package com.example.backend;
+package com.ecommerce;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
 @SpringBootTest
-class BackendApplicationTests
+class EcommerceApplicationTests
 {
 
 	@Test
