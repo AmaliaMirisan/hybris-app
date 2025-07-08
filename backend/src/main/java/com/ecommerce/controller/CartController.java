@@ -6,6 +6,7 @@ import com.ecommerce.dto.response.CartResponse;
 import com.ecommerce.entity.CartItem;
 import com.ecommerce.entity.User;
 import com.ecommerce.service.CartService;
+import com.ecommerce.service.UserService;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
