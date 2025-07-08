@@ -2,10 +2,14 @@ package com.ecommerce.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "carts")
 public class Cart extends BaseEntity {
 
@@ -20,13 +24,4 @@ public class Cart extends BaseEntity {
 	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<CartItem> cartItems;
 
-	// Getters and setters
-	public String getSessionId() { return sessionId; }
-	public void setSessionId(String sessionId) { this.sessionId = sessionId; }
-
-	public User getUser() { return user; }
-	public void setUser(User user) { this.user = user; }
-
-	public List<CartItem> getCartItems() { return cartItems; }
-	public void setCartItems(List<CartItem> cartItems) { this.cartItems = cartItems; }
 }

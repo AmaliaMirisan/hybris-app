@@ -4,12 +4,16 @@ import jakarta.persistence.*
 import jakarta.validation.constraints.DecimalMin
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotNull
+import lombok.Getter
+import lombok.Setter
 import java.math.BigDecimal
 
 @Entity
+@Getter
+@Setter
 @Table(name = "cart_items")
 class CartItem : BaseEntity() {
-    // Getters and setters
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
     var cart: Cart? = null

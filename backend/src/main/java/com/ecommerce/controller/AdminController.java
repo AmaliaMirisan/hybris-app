@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/admin")
 @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4201"})
-@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     @Autowired
@@ -34,9 +32,6 @@ public class AdminController {
 
     @Autowired
     private OrderService orderService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private AdminService adminService;
@@ -189,34 +184,6 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Map<String, Long>>> getOrderStats() {
         Map<String, Long> orderStats = adminService.getOrderStatusCounts();
         return ResponseEntity.ok(ApiResponse.success(orderStats));
-    }
-
-    // User Management
-    @GetMapping("/users")
-    public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(ApiResponse.success(users));
-    }
-
-    @GetMapping("/users/{id}")
-    public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable Long id) {
-        User user = userService.getUserById(id);
-        return ResponseEntity.ok(ApiResponse.success(user));
-    }
-
-    @PutMapping("/users/{id}/status")
-    public ResponseEntity<ApiResponse<String>> updateUserStatus(
-            @PathVariable Long id,
-            @RequestParam boolean active) {
-        
-        if (active) {
-            userService.activateUser(id);
-        } else {
-            userService.deactivateUser(id);
-        }
-        
-        String message = active ? "User activated successfully" : "User deactivated successfully";
-        return ResponseEntity.ok(ApiResponse.success(message));
     }
 
     // Helper methods

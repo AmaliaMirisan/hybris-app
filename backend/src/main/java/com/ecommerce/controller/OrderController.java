@@ -8,14 +8,15 @@ import com.ecommerce.entity.OrderItem;
 import com.ecommerce.entity.User;
 import com.ecommerce.service.OrderService;
 import com.ecommerce.service.UserService;
+
 import jakarta.validation.Valid;
+
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,9 +37,8 @@ public class OrderController {
     public ResponseEntity<ApiResponse<OrderResponse>> createOrder(
             @Valid @RequestBody OrderRequest orderRequest,
             @RequestParam String sessionId) {
-        
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.getUserByUsername(authentication.getName());
+
+        User user = userService.getUserByUsername(orderRequest.getCustomerEmail());
         
         Order order = orderService.createOrderFromCart(
             sessionId, user, orderRequest.getShippingAddress(), orderRequest.getPaymentMethod());
@@ -76,9 +76,8 @@ public class OrderController {
     }
 
     @GetMapping("/my-orders")
-    public ResponseEntity<ApiResponse<List<OrderResponse>>> getCurrentUserOrders() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.getUserByUsername(authentication.getName());
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getCurrentUserOrders(String customerEmail) {
+        User user = userService.getUserByUsername(customerEmail);
         
         List<Order> orders = orderService.getUserOrders(user);
         List<OrderResponse> orderResponses = orders.stream()
