@@ -6,13 +6,19 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+
 @Entity
+@Getter
+@Setter
 @Table(name = "products")
-public class Product extends BaseEntity {
+public class Product extends BaseEntity
+{
 
 	@NotBlank
 	@Size(min = 2, max = 200)
@@ -44,31 +50,4 @@ public class Product extends BaseEntity {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<OrderItem> orderItems;
 
-	// Getters and setters
-	public String getName() { return name; }
-	public void setName(String name) { this.name = name; }
-
-	public String getDescription() { return description; }
-	public void setDescription(String description) { this.description = description; }
-
-	public BigDecimal getPrice() { return price; }
-	public void setPrice(BigDecimal price) { this.price = price; }
-
-	public Integer getStockQuantity() { return stockQuantity; }
-	public void setStockQuantity(Integer stockQuantity) { this.stockQuantity = stockQuantity; }
-
-	public Category getCategory() { return category; }
-	public void setCategory(Category category) { this.category = category; }
-
-	public String getImageUrl() { return imageUrl; }
-	public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-
-	public boolean isActive() { return isActive; }
-	public void setActive(boolean active) { isActive = active; }
-
-	public List<CartItem> getCartItems() { return cartItems; }
-	public void setCartItems(List<CartItem> cartItems) { this.cartItems = cartItems; }
-
-	public List<OrderItem> getOrderItems() { return orderItems; }
-	public void setOrderItems(List<OrderItem> orderItems) { this.orderItems = orderItems; }
 }
